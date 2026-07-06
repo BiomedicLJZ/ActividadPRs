@@ -1,4 +1,5 @@
 #include <iostream>
+#include <limits>
 #include <string>
 using namespace std;
 
@@ -33,7 +34,7 @@ int main()
                  "                   (Tamano Variable)\n" << x;
 
 
-    do                                                                      //Este do es quien se encarga de verificar que las matrices puedan multiplicarse cumpliendo (ColumnasA = FilasA)
+    do                                                                      //Este do es quien se encarga de verificar que las matrices puedan multiplicarse cumpliendo (ColumnasA == FilasB)
     {                                                                       //y ademas solicitar los datos de las matrices a multiplicar.
         //MATRIZ A
         cout << "                    --- MATRIZ A ---\n" << y;
@@ -65,11 +66,31 @@ int main()
 
 void crearMatriz(int matriz[maximaCapacidad][maximaCapacidad], int &filas, int &columnas, string x, string y)
 {
-    cout << "Ingrese el numero de filas de la matriz: ";
-    cin >> filas;
+    do
+    {
+        cout << "Ingrese el numero de filas de la matriz: ";
+        cin >> filas;
 
-    cout << "Ingrese el numero de columnas de la matriz: ";
-    cin >> columnas;
+        if (!cin || filas < 1 || filas > maximaCapacidad)
+        {
+            cout << "ERROR. Ingresa un entero entre 1 y " << maximaCapacidad << ".\n";
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        }
+    }while (!cin || filas < 1 || filas > maximaCapacidad);
+
+    do
+    {
+        cout << "Ingrese el numero de columnas de la matriz: ";
+        cin >> columnas;
+
+        if (!cin || columnas < 1 || columnas > maximaCapacidad)
+        {
+            cout << "ERROR. Ingresa un entero entre 1 y " << maximaCapacidad << ".\n";
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        }
+    }while (!cin || columnas < 1 || columnas > maximaCapacidad);
 
     cout << y;
 
@@ -79,7 +100,12 @@ void crearMatriz(int matriz[maximaCapacidad][maximaCapacidad], int &filas, int &
         for (int j = 0; j < columnas; j++)                              //Este for recorre las columnas de la amatriz ]    columnas de la matriz antes de cambiar de fila.
         {
             cout << "Componente [" <<i<<"][" <<j<<"]: ";
-            cin >>matriz[i][j];                                         //Registro de cada camponente de la matriz
+            while (!(cin >>matriz[i][j]))                               //Registro de cada camponente de la matriz
+            {
+                cout << "ERROR. Ingresa un numero valido: ";
+                cin.clear();
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            }
         }
     }
 
@@ -104,11 +130,11 @@ void multiplicacion(int mA[maximaCapacidad][maximaCapacidad], int mB[maximaCapac
 {
     for (int i = 0; i < nFilasA; i++)                                   //]--> Este pedazo recorre cada componente de la amtriz A, ya que ocupamos
     {                                                                   //]--> que vaya en secuencia para despues multplicarlos por los componentes
-        for (int j = 0; j < nColumnasA; j++)                            //]--> de la matriz B
+        for (int j = 0; j < nColumnasB; j++)                            //]--> de la matriz B
         {                                                               //]
             mAB[i][j] = 0;                                              //]--> Ademas aqui inicializamos una nueva matriz, siendo el producto de AB donde se guardaran los valores, Esta matriz sigue el mismo orden que cuando registramos una matriz arriba.
 
-            for (int k = 0; k < nColumnasB; k++)                        //]--> Aqui tomamos solo de referencia la Columna de la matiz B, la cual sera la primera en terminar su bucle antes de que se cambie de fila en la amtriz A.
+            for (int k = 0; k < nColumnasA; k++)                        //]--> Aqui tomamos solo de referencia la Columna de la matiz B, la cual sera la primera en terminar su bucle antes de que se cambie de fila en la amtriz A.
             {
                 mAB[i][j] += mA[i][k] * mB[k][j];                       //]--> El acomodo ma[i][k] * mB[k][j] matematicamente te dice:
             }                                                           //]    Para la primera iteraccion de k --> al componente 0 de mAB le voy a sumar: (mA[0][0] = 2) * (mb[0][0] = 3) = 6
@@ -120,7 +146,7 @@ void multiplicacion(int mA[maximaCapacidad][maximaCapacidad], int mB[maximaCapac
     for (int i = 0; i < nFilasA; i++)
     {
         cout << "| ";
-        for (int j = 0; j < nColumnasA; j++)
+        for (int j = 0; j < nColumnasB; j++)
         {
             cout << mAB[i][j] << " ";
         }
