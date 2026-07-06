@@ -2,12 +2,31 @@
 #include <vector>
 
 std::vector<std::vector<int>> multiplicarMatrices(const std::vector<std::vector<int>>& A, const std::vector<std::vector<int>>& B) {
-    int filasA = A.size();
-    int columnasA = A[0].size();
-    int columnasB = B[0].size();
+    if (A.empty() || B.empty() || A[0].empty() || B[0].empty()) {
+        return {};
+    }
 
-    std::vector<std::vector<int>> C(filasA, std::vector<int>(columnasB, 0));
+    int filasA = static_cast<int>(A.size());
+    int columnasA = static_cast<int>(A[0].size());
+    int filasB = static_cast<int>(B.size());
+    int columnasB = static_cast<int>(B[0].size());
 
+    for (const auto& fila : A) {
+        if (fila.size() != static_cast<std::size_t>(columnasA)) {
+            return {};
+        }
+    }
+    for (const auto& fila : B) {
+        if (fila.size() != static_cast<std::size_t>(columnasB)) {
+            return {};
+        }
+    }
+
+    if (columnasA != filasB) {
+        return {};
+    }
+
+    std::vector<std::vector<int>> C(filasA, std::vector<int>(columnasB, 0));
     for (int i = 0; i < filasA; i++) {
         for (int j = 0; j < columnasB; j++) {
             for (int k = 0; k < columnasA; k++) {
